@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Patched APK Repo</title>
+    <style>
+        :root {
+            --main-bg-light: linear-gradient(135deg, #e3ffe8 0%, #b8c1ec 100%);
+            --main-bg-dark: linear-gradient(135deg, #181818 0%, #282a36 100%);
+            --glass-bg-light: rgba(255,255,255,0.82);
+            --glass-bg-dark: rgba(32,34,44,0.92);
+            --accent1: #3b82f6;
+            --accent2: #818cf8;
+            --accent3: #a5b4fc;
+            --accent4: #c7d2fe;
+            --badge-mbl: #b8c1ec;
+            --badge-mbl2: #dbeafe;
+            --badge-mirror: #ffe29b;
+            --release-blue-dark: #21294a;
+            --mainver-blue: #4ea0f7;
+            --mainver-blue-bg: #273c5c;
+        }
+        html {
+            font-size: 100%;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--main-bg-light);
+            transition: background 0.5s;
+            position: relative;
+        }
+        body[data-theme="dark"] {
+            background: var(--main-bg-dark);
+        }
+        .pixel-grid {
+            pointer-events: none;
+            position: fixed;
+            left:0;top:0;right:0;bottom:0;
+            z-index:0;
+            opacity: 0.08;
+            background-size: 32px 32px;
+            background-image: linear-gradient(to right, #0001 1px, transparent 1px), linear-gradient(to bottom, #0001 1px, transparent 1px);
+            transition: opacity 0.4s;
+        }
+        body[data-theme="dark"] .pixel-grid {
+            opacity: 0.14;
+        }
+        .floating-icon {
+            position: fixed;
+            z-index: 9;
+            pointer-events: none;
+            animation: floaticon 7s infinite ease-in-out;
+            opacity: 0.14;
+        }
+        @keyframes floaticon {
+            0% { transform: translateY(0px) rotate(0deg);}
+            50% { transform: translateY(-18px) rotate(3deg);}
+            100% { transform: translateY(0px) rotate(-1deg);}
+        }
+        .toggle-outer {
+            position: fixed;
+            top: 18px;
+            right: 22px;
+            z-index: 1000;
+        }
+        .toggle-circle {
+            width: 44px;
+            height: 44px;
+            background: #b8c1ec;
+            border-radius: 50%;
+            border: none;
+            color: #232946;
+            box-shadow: 0 2px 8px #b8c1ec22;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.45em;
+            transition: background 0.2s, color 0.2s;
+        }
+        .toggle-circle:hover {
+            background: #818cf8;
+            color: #fff;
+        }
+        body[data-theme="dark"] .toggle-circle {
+            background: #232946;
+            color: #eebbc3;
+        }
+        .centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding-bottom: 40px;
+        }
+        h1 {
+            margin-top: 48px;
+            margin-bottom: 16px;
+            font-size: 2.3em;
+            font-weight: 700;
+            color: #232946;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        body[data-theme="dark"] h1 {
+            color: #eebbc3;
+        }
+        .repo-icons {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .info-list, .links-block, .mbl-box, .release {
+            margin: 0 auto 16px auto;
+            padding: 20px 36px;
+            border-radius: 18px;
+            box-shadow: 0 6px 32px 0 rgba(40,40,60,0.09), 0 1.5px 10px rgba(24,40,80,0.13);
+            background: var(--glass-bg-light);
+            max-width: 650px;
+            font-size: 1.09em;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(2.5px);
+        }
+        .links-block {
+            margin: 22px auto 14px auto;
+            font-size: 1em;
+        }
+        .mbl-box {
+            margin: 22px auto 8px auto;
+            text-align: left;
+            font-size: 1.07em;
+            padding: 20px 18px 13px 18px;
+        }
+        body[data-theme="dark"] .info-list,
+        body[data-theme="dark"] .links-block,
+        body[data-theme="dark"] .mbl-box,
+        body[data-theme="dark"] .release {
+            background: var(--glass-bg-dark);
+        }
+        .info-list code {
+            display: block;
+            background: none;
+            color: #232946;
+            font-family: inherit;
+            font-size: 1em;
+            margin: 0.33em 0;
+            letter-spacing: 0.5px;
+        }
+        body[data-theme="dark"] .info-list code {
+            color: #eebbc3;
+        }
+        .info-list .note {
+            color: #ad1e1e;
+            font-size: 0.97em;
+            opacity: 0.86;
+            margin-top: 4px;
+        }
+        body[data-theme="dark"] .info-list .note {
+            color: #ffb4b4;
+        }
+        .links-block code {
+            background: none;
+            color: #222;
+            font-family: inherit;
+            font-size: 1em;
+            padding: 0;
+        }
+        body[data-theme="dark"] .links-block code {
+            color: #eebbc3;
+        }
+        .links-block a {
+            color: #3152d8;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .links-block a:hover {
+            text-decoration: underline;
+        }
+        body[data-theme="dark"] .links-block a {
+            color: #7bd1ff;
+        }
+        .loader-row {
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .badge {
+            display: inline-block;
+            min-width: 54px;
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.99em;
+            margin: 0 11px 0 0;
+            letter-spacing: 1px;
+            border: none;
+            box-shadow: 0 1.5px 10px 0 #b8c1ec15;
+        }
+        .badge.mbl { background: var(--badge-mbl); color: #1d2a3a; }
+        .badge.mbl2 { background: var(--badge-mbl2); color: #2563eb; }
+        .badge.mirror { background: var(--badge-mirror); color: #8a5a00; }
+        body[data-theme="dark"] .badge.mbl { background: #3c4a60; color: #b8c1ec; }
+        body[data-theme="dark"] .badge.mbl2 { background: #232946; color: #7dd3fc; }
+        body[data-theme="dark"] .badge.mirror { background: #554400; color: #ffe29b; }
+        .loader-row a { color: #2563eb; text-decoration: none }
+        .neon-bar {
+            height: 4px;
+            width: 90px;
+            border-radius: 2px;
+            margin: 16px auto 22px auto;
+            background: linear-gradient(90deg, var(--accent1), var(--accent2), var(--accent3), var(--accent4));
+            box-shadow: 0 0 18px 5px #b8c1ec44;
+            opacity: 0.82;
+        }
+        .download-headline {
+            font-size: 1.13em;
+            font-weight: 600;
+            margin: 22px 0 8px 0;
+            text-align: center;
+            color: #222;
+            letter-spacing: 0.5px;
+        }
+        body[data-theme="dark"] .download-headline {
+            color: #eebbc3;
+        }
+        .sort-bar-box {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: center;
+            margin: 0 auto 10px auto;
+            gap: 12px;
+        }
+        #versionFilter, #sortSelect {
+            border-radius: 13px;
+            background: var(--glass-bg-light);
+            border: 1.5px solid #a5b4fc;
+            color: #222;
+            padding: 10px 18px;
+            font-size: 1.09em;
+            box-shadow: 0 2px 18px 0 #b8c1ec13;
+            transition: background 0.2s, color 0.2s;
+            margin-right: 7px;
+            outline: none;
+        }
+        #sortSelect { margin-right: 0; }
+        body[data-theme="dark"] #versionFilter,
+        body[data-theme="dark"] #sortSelect {
+            background: var(--glass-bg-dark);
+            color: #eebbc3;
+            border: 1.5px solid #3b82f6;
+        }
+        #versionFilter:focus, #sortSelect:focus {
+            border-color: #232946;
+        }
+        body[data-theme="dark"] #versionFilter:focus,
+        body[data-theme="dark"] #sortSelect:focus {
+            border-color: #eebbc3;
+        }
+        .search-bar-box {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: center;
+            margin: 8px auto 0 auto;
+        }
+        .search-bar-box input[type="search"] {
+            width: 100%;
+            max-width: 320px;
+            padding: 11px 18px;
+            font-size: 1.08em;
+            border-radius: 14px;
+            border: 1.5px solid #a5b4fc;
+            background: var(--glass-bg-light);
+            color: #222;
+            transition: background 0.2s, color 0.2s, border 0.2s;
+            text-align: center;
+            box-shadow: 0 2px 18px 0 #b8c1ec13;
+            outline: none;
+        }
+        .search-bar-box input[type="search"]:focus {
+            border-color: #232946;
+        }
+        body[data-theme="dark"] .search-bar-box input[type="search"] {
+            background: var(--glass-bg-dark);
+            color: #eebbc3;
+            border: 1.5px solid #3b82f6;
+        }
+        body[data-theme="dark"] .search-bar-box input[type="search"]:focus {
+            border-color: #eebbc3;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 0 auto;
+            z-index: 2;
+            position: relative;
+        }
+        .release {
+            margin: 18px 0;
+            padding: 18px 18px 13px 18px;
+            border: none;
+            border-radius: 24px;
+            background: #f8fafc;
+            box-shadow: 0 2px 16px rgba(40, 80, 80, 0.10);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            transition: background 0.3s, color 0.3s;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .release-title {
+            margin: 0;
+            font-size: 1.25em;
+            font-weight: 900;
+            word-break: break-word;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #2363d1;
+        }
+        .release .main-version,
+        .release .release-title,
+        .release .release-title * {
+            color: #2363d1;
+        }
+        body[data-theme="dark"] .release-title,
+        body[data-theme="dark"] .release .main-version,
+        body[data-theme="dark"] .release .release-title * {
+            color: #6ca6ff;
+            background: none !important;
+        }
+        .release .latest-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(90deg, #6ea8ff 0%, #3b82f6 100%);
+            color: #fff;
+            padding: 6px 15px 6px 13px;
+            border-radius: 0 14px 0 14px;
+            font-weight: bold;
+            font-size: 0.92em;
+            letter-spacing: 1.2px;
+            box-shadow: 0 2px 10px #3b82f655;
+            z-index: 10;
+            border-top: none;
+            border-right: none;
+            text-shadow: 0 1px 8px #3b82f6bb;
+            min-width: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .release p {
+            margin: 10px 0 6px 0;
+            color: #2363d1;
+            font-size: 1.12em;
+        }
+        body[data-theme="dark"] .release {
+            background: var(--release-blue-dark);
+        }
+        body[data-theme="dark"] .release p {
+            color: #6ca6ff;
+        }
+        body[data-theme="dark"] .release .download-btn {
+            background: linear-gradient(90deg, #4066b6 0%, #4ea0f7 100%);
+            color: #fff;
+            border: 2px solid #a5b4fc44;
+            font-weight: 800;
+            text-decoration: none !important;
+        }
+        body[data-theme="dark"] .release .download-btn:hover {
+            background: linear-gradient(90deg, #a5b4fc 70%, #1e40af 100%);
+        }
+        body[data-theme="dark"] .release .latest-label {
+            background: linear-gradient(90deg, #4066b6 0%, #4ea0f7 100%);
+            color: #fff;
+        }
+        .release .download-btn {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            padding: 19px 0;
+            margin: 16px auto 0 auto;
+            font-size: 1.25em;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            border-radius: 16px;
+            background: linear-gradient(90deg, #3b82f6 60%, #818cf8 100%);
+            color: #fff;
+            text-align: center;
+            border: none;
+            box-shadow: 0 2px 8px 0 #3b82f622;
+            transition: background 0.3s, box-shadow 0.3s, font-size 0.2s;
+            white-space: normal;
+            word-break: break-word;
+            overflow: hidden;
+            text-decoration: none !important;
+        }
+        .release .download-btn:hover {
+            background: linear-gradient(90deg, #1e40af 70%, #a5b4fc 100%);
+            box-shadow: 0 4px 18px 0 #3b82f655;
+        }
+        @media (orientation: portrait) {
+            .sort-bar-box {
+                max-width: 300px !important;
+                gap: 8px !important;
+                margin-bottom: 8px !important;
+            }
+            #versionFilter, #sortSelect {
+                font-size: 1em !important;
+                padding: 10px 10px !important;
+                border-radius: 8px !important;
+                min-width: 0 !important;
+                width: 48% !important;
+                max-width: 165px !important;
+                margin-right: 0 !important;
+            }
+            .search-bar-box {
+                max-width: 300px !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                margin-bottom: 8px !important;
+                margin-top: 0 !important;
+                padding: 0 !important;
+            }
+            .search-bar-box input[type="search"] {
+                font-size: 1em !important;
+                padding: 10px 10px !important;
+                border-radius: 8px !important;
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 160px !important;
+                margin: 0 auto !important;
+                box-sizing: border-box !important;
+            }
+            .release,
+            .info-list,
+            .links-block,
+            .mbl-box {
+                max-width: 300px !important;
+                width: 92vw !important;
+                min-width: 0 !important;
+                margin-left: auto !important;
+                margin-right: auto !important;
+                font-size: 1em !important;
+                padding: 15px 3vw 13px 3vw !important;
+                border-radius: 13px !important;
+                box-shadow: 0 2px 12px 0 rgba(40,40,60,0.07), 0 1.5px 7px rgba(24,40,80,0.09) !important;
+            }
+            .release .download-btn {
+                font-size: 1.12em !important;
+                padding: 15px 0 !important;
+            }
+            .release-title {
+                font-size: 0.95em !important;
+            }
+            .release .latest-label {
+                font-size: 0.77em !important;
+                min-width: 46px !important;
+                padding: 3px 8px 3px 6px !important;
+                border-radius: 0 9px 0 9px !important;
+            }
+            .release p {
+                font-size: 0.92em !important;
+            }
+        }
+        @media (orientation: portrait) {
+            .badge.unofficial {
+                display: none !important;
+            }
+        }
+        .mirror-row {
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+        .madeby {
+            font-size: 0.51em;
+            opacity: 0.05;
+            text-align: center;
+            margin-bottom: 3px;
+            margin-top: 22px;
+            letter-spacing: 0.5px;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="pixel-grid"></div>
+    <img class="floating-icon" src="https://i.imgur.com/lvWKpCY.png" style="top:9vh;left:6vw;width:54px;">
+    <img class="floating-icon" src="https://tr.rbxcdn.com/180DAY-12f79a125d330f1b42dc6e4dfa1ec10e/420/420/Hat/Webp/noFilter" style="bottom:8vh;right:4vw;width:44px;animation-delay:2.2s;">
+    <div class="toggle-outer">
+        <button id="darkModeToggle" class="toggle-circle" title="Toggle Dark/Light Mode">🌙</button>
+    </div>
+    <div class="centered">
+        <h1>
+            <span class="repo-icons">
+                <img src="https://i.imgur.com/lvWKpCY.png" style="height: 1.4em; vertical-align: -15%; display: inline-block;">
+            </span>
+            Minecraft Patched APK Repo (remake)
+            <span class="repo-icons">
+                <img src="https://tr.rbxcdn.com/180DAY-12f79a125d330f1b42dc6e4dfa1ec10e/420/420/Hat/Webp/noFilter" style="height: 1.6em; vertical-align: -45%; display: inline-block;">
+            </span>
+        </h1>
+        <div class="info-list">
+            <code>Born on 5/19/25.</code>
+            <code>A remake of MCPEBD.</code>
+            <code class="note">NOTE: This Program is not affiliated with Mojang Studios.</code>
+        </div>
+        <div class="links-block">
+            <code>
+                <strong>Useful links:</strong>
+                <a href="https://discord.gg/UJdvR6WBAe">YSS Discord Server</a>
+                |
+                <a href="https://discord.gg/fdKbYyacCc">Newb Discord Server</a>
+                |
+                <a href="https://discord.gg/JzS4JkStre">GeoPacks Discord Server</a>
+                |
+                <a href="https://github.com/ddf8196/MaterialBinLoader">MaterialBinLoader</a>
+                |
+                <a href="https://github.com/mcbegamerxx954/mtbinloader2">MaterialBinLoader2</a>
+                |
+                <a href="https://mcpebd.github.io/">MCPEBD</a>
+            </code>
+        </div>
+        <div class="mbl-box">
+            <div class="loader-row">
+                <span class="badge mbl">MBL</span>
+                <span>= <b>M</b>aterial<b>B</b>in<b>L</b>oader. Same loader that YSS apks use)</span>
+            </div>
+            <div class="loader-row">
+                <span class="badge mbl2">MBL2</span>
+                <span>= <b>M</b>aterial<b>B</b>in<b>L</b>oader<b>2</b>. Same as MBL, made by <a href="https://github.com/mcbegamerxx954" target="_blank">mcbegamerxx954</a>. Can load OreUI, camera, deferred files. (1.21.44+)</span>
+            </div>
+            <div class="mirror-row">
+                <span class="badge mirror">Mirror</span>
+                <span>= Same patched APKs, just different mirror links — using these helps and motivates me.</span>
+            </div>
+        </div>
+        <div class="neon-bar"></div>
+        <div class="download-headline" style="margin-top:0;">Download Here</div>
+        <div class="sort-bar-box">
+            <select id="versionFilter">
+                <option value="all">All Versions</option>
+            </select>
+            <select id="sortSelect">
+                <option value="latest">Sort: Newest</option>
+                <option value="oldest">Sort: Oldest</option>
+                <option value="downloads">Sort: Most Downloads</option>
+                <option value="size">Sort: Biggest</option>
+            </select>
+        </div>
+        <div class="search-bar-box">
+            <input type="search" id="releaseSearch" placeholder="Search by version...">
+        </div>
+        <div class="container">
+            <div id="releases"></div>
+        </div>
+        <div class="madeby">page made by chatgpt + copilot 🥀</div>
+    </div>
+    <script>
+        // Dark mode toggle (robust, using data-theme and localStorage)
+        const btn = document.getElementById('darkModeToggle');
+        function setThemeFromStorage() {
+            const theme = localStorage.getItem('darkmode');
+            if (theme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                btn.textContent = '☀️';
+            } else {
+                document.body.setAttribute('data-theme', '');
+                btn.textContent = '🌙';
+            }
+        }
+        btn.onclick = () => {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.body.setAttribute('data-theme', '');
+                btn.textContent = '🌙';
+                localStorage.setItem('darkmode', '');
+            } else {
+                document.body.setAttribute('data-theme', 'dark');
+                btn.textContent = '☀️';
+                localStorage.setItem('darkmode', 'dark');
+            }
+        };
+        setThemeFromStorage();
+
+        // Responsive class for screen width
+        function updateResponsiveMode() {
+            const width = window.innerWidth;
+            const body = document.body;
+            if(width <= 480) {
+                body.setAttribute('data-screen', 'small');
+            } else if(width <= 768) {
+                body.setAttribute('data-screen', 'medium');
+            } else {
+                body.setAttribute('data-screen', 'large');
+            }
+        }
+        window.addEventListener('resize', updateResponsiveMode);
+        window.addEventListener('DOMContentLoaded', updateResponsiveMode);
+
+        // UI state
+        let allReleases = [];
+        let filteredReleases = [];
+        let versionOptions = [];
+
+        // Controls
+        const versionFilter = document.getElementById('versionFilter');
+        const sortSelect = document.getElementById('sortSelect');
+        const searchInput = document.getElementById('releaseSearch');
+
+        // Utility functions
+        function extractMCVersion(name) {
+            // Extracts "1.20.10" etc from a release or asset name (simple pattern)
+            let match = name.match(/(1\.\d{1,2}(?:\.\d{1,3})?)/);
+            return match ? match[1] : null;
+        }
+        function formatReleaseDate(bodyText) {
+            const datePattern = /^\d{8}/;
+            const match = bodyText.match(datePattern);
+            if (match) {
+                const dateString = match[0];
+                const year = dateString.substring(0, 4);
+                const month = dateString.substring(4, 6);
+                const day = dateString.substring(6, 8);
+                const dateObj = new Date(`${year}-${month}-${day}`);
+                const options = { year: 'numeric', month: 'short', day: 'numeric' };
+                return dateObj.toLocaleDateString('en-US', options);
+            }
+            return 'Unspecified';
+        }
+        // UI logic
+        versionFilter.addEventListener('change', renderReleases);
+        sortSelect.addEventListener('change', renderReleases);
+        searchInput.addEventListener('input', renderReleases);
+
+        function populateVersionFilter() {
+            // Gather all unique versions from releases/assets
+            let versions = new Set();
+            allReleases.forEach(release => {
+                let relVer = extractMCVersion(release.name);
+                if (relVer) versions.add(relVer);
+                release.assets.forEach(asset => {
+                    let assetVer = extractMCVersion(asset.name);
+                    if (assetVer) versions.add(assetVer);
+                });
+            });
+            // Sort descending (latest first)
+            let sorted = Array.from(versions).sort((a, b) => {
+                const parse = s => s.split('.').map(n=>parseInt(n));
+                let [a1,a2,a3] = parse(a), [b1,b2,b3] = parse(b);
+                if(a1!==b1) return b1-a1;
+                if(a2!==b2) return b2-a2;
+                return (b3||0)-(a3||0);
+            });
+            versionFilter.innerHTML = '<option value="all">All Versions</option>' +
+                sorted.map(v=>`<option value="${v}">${v}</option>`).join('');
+        }
+
+        function getDownloadButtonText(fileName, sizeMB) {
+            const lower = fileName.toLowerCase();
+            if (lower === "openme.txt" || lower.endsWith("/openme.txt")) {
+                return "Mirror Links";
+            } else if (lower.includes("mbl2")) {
+                return `Download MBL2 Patched (${sizeMB} MB)`;
+            } else if (lower.includes("mbl")) {
+                return `Download MBL Patched (${sizeMB} MB)`;
+            } else {
+                return `Download (${sizeMB} MB)`;
+            }
+        }
+
+        function renderReleases() {
+            const releasesContainer = document.getElementById('releases');
+            releasesContainer.innerHTML = '';
+            let search = searchInput.value.trim().toLowerCase();
+            let version = versionFilter.value;
+            let sortMode = sortSelect.value;
+
+            // Filter
+            filteredReleases = allReleases.filter(release => {
+                // Version filter
+                let relVers = extractMCVersion(release.name) || "";
+                let assetVers = (release.assets||[]).map(a=>extractMCVersion(a.name)||"");
+                let matchesVersion = version === "all" ||
+                    relVers === version ||
+                    assetVers.includes(version);
+
+                // Search filter
+                let matchesSearch = !search ||
+                    (release.name && release.name.toLowerCase().includes(search)) ||
+                    (release.assets && release.assets.some(asset => asset.name.toLowerCase().includes(search)));
+
+                return matchesVersion && matchesSearch;
+            });
+
+            // Sort
+            filteredReleases.sort((a, b) => {
+                if (sortMode === "latest") {
+                    return new Date(b.published_at) - new Date(a.published_at);
+                } else if (sortMode === "oldest") {
+                    return new Date(a.published_at) - new Date(b.published_at);
+                } else if (sortMode === "downloads") {
+                    let aDl = a.assets.reduce((s,x)=>s+x.download_count,0);
+                    let bDl = b.assets.reduce((s,x)=>s+x.download_count,0);
+                    return bDl - aDl;
+                } else if (sortMode === "size") {
+                    let aSz = a.assets.reduce((s,x)=>s+x.size,0);
+                    let bSz = b.assets.reduce((s,x)=>s+x.size,0);
+                    return bSz - aSz;
+                }
+                return 0;
+            });
+
+            filteredReleases.forEach((release, index) => {
+                let totalDownloads = 0;
+                let totalSize = 0;
+                let downloadUrl = '';
+                const releaseElement = document.createElement('div');
+                releaseElement.classList.add('release');
+                const releaseDate = formatReleaseDate(release.body);
+
+                // Find MC version (for main title text coloring)
+                let mcVersion = extractMCVersion(release.name) || "";
+                // "Latest" label for the newest release
+                let latestLabel = "";
+                if (index === 0 && filteredReleases.length > 0) {
+                    latestLabel = `<span class="latest-label">Latest</span>`;
+                }
+
+                // Use strong and color for the MC version text (centered at top, not too bright)
+                let versionTitle = `<span class="main-version">${mcVersion}</span>`;
+                let restTitle = release.name.replace(mcVersion, "").trim();
+
+                releaseElement.innerHTML = `
+                    ${latestLabel}
+                    <h2 class="release-title">${versionTitle}${restTitle ? " " + restTitle : ""}</h2>
+                    <p><strong>Creation Date:</strong> ${releaseDate}</p>
+                    <p><strong>Total Downloads:</strong> <span id="downloads-${release.id}">0</span></p>
+                    <p></p>
+                `;
+
+                release.assets.forEach(asset => {
+                    // Show button for .apk or OPENME.txt
+                    if (asset.name.endsWith('.apk') || asset.name.toLowerCase() === "openme.txt") {
+                        totalDownloads += asset.download_count;
+                        totalSize += asset.size;
+                        downloadUrl = asset.browser_download_url;
+                        const fileSizeMB = (asset.size / (1024 * 1024)).toFixed(0);
+                        const downloadButtonText = getDownloadButtonText(asset.name, fileSizeMB);
+                        const downloadButton = document.createElement('a');
+                        downloadButton.classList.add('download-btn');
+                        downloadButton.href = downloadUrl;
+                        downloadButton.target = "_blank";
+                        downloadButton.textContent = downloadButtonText;
+                        releaseElement.appendChild(downloadButton);
+                    }
+                });
+                totalSize = (totalSize / (1024 * 1024)).toFixed(2);
+                const downloadsElement = releaseElement.querySelector(`#downloads-${release.id}`);
+                downloadsElement.textContent = totalDownloads;
+                releasesContainer.appendChild(releaseElement);
+            });
+        }
+
+        async function fetchReleases() {
+            const apiUrl = 'https://api.github.com/repos/mcpatched/patched/releases';
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                allReleases = data;
+                populateVersionFilter();
+                renderReleases();
+            } catch (error) {
+                console.error('Error fetching releases:', error);
+            }
+        }
+        fetchReleases();
+    </script>
+</body>
+</html>
